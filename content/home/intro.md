@@ -19,6 +19,6 @@ author: admin
 #  css_class: fullscreen
 ---
 
-🐈 Hey! I'm **Alice**, a data scientist at Google.
+🐈 Hey! I'm **Lordran**, an engineer and architect from China.
 
-Check out my [CV](/about/) and blog posts below 🌈
+I will share something interesting here 🌈

@@ -1,19 +1,19 @@
+---
 title: 走近SSH
-author: lordran
+date: 2021-07-25T08:54:22.944Z
+authors:
+  - lordran
 tags:
   - SSH
   - 运维
-  - DevOPS
+  - DevOps
   - 安全
-
 categories:
   - 协议
-
-date: 2020-07-25 16:54:57
-
 ---
+- - -
 
-### 历史	
+### 历史
 
 今天我们聊的不是"古老"的 JAVA SSH，而是诞生至今已20多年的网络安全协议-SSH。SSH 是 **Secure Shell** 的简称，是一种使得数据在网络中安全传输的协议。在信息爆炸，信息安全愈发重要的今天，SSH 已无处不在，应用十分广泛，正如其官网描述的：
 
@@ -23,13 +23,9 @@ date: 2020-07-25 16:54:57
 
 是的，其也在云基础设施广泛使用，SSH 早已成一个标准，各个类 Unix 或 Linux 都原生支持，SSH 运维或者如今的 DevOPS   对于其再熟悉不过了。
 
-
-
 ### 加密
 
 ​	SSH 作为一个安全协议，SSH 起初只是为了使得即使在不安全的网络环境下也能保障数据传输的安全。安全来自于 SSH 使用的各种加密算法，如：aes, rsa, dsa, ecdsa 等，其中的 rsa 使用就相当广泛。当然这里需要强调的是，**SSH 中是使用对称加密来加密进行通信的，非对称加密只是用在认证用户身份**。
-
-
 
 ### 实践道原理
 
@@ -38,14 +34,9 @@ date: 2020-07-25 16:54:57
 {% asset_img 1.png %} 
 
 1. 客户端与服务端建立连接
-
 2. 客户端发送公钥到服务端
-
 3. 服务端验证并建立安全通道
-
 4. 客户端登录到服务端
-
-   
 
 SSH 最常用的就是免密登陆，我们就以免密登陆的实际操作来说明 SSH 的原理。
 
@@ -55,11 +46,7 @@ SSH server：172.22.8.204
 
 user: test
 
-
-
 #### 会话加密协商（**Session Encryption Negotiation**）
-
-
 
 使用test账号登录到服务器：
 
@@ -109,8 +96,6 @@ Are you sure you want to continue connecting (yes/no/[fingerprint])?
 
 > RSA key fingerprint is SHA256:vyZw9CtMUy3l6RWyXDgINZZvbjJxF177s0oMKYcUUqs
 
-
-
 我们此时可以在服务端运行debug模式，查看日志：
 
 ```bash
@@ -132,8 +117,6 @@ Server listening on 0.0.0.0 port 22.
 > private host key #0: ssh-rsa SHA256:vyZw9CtMUy3l6RWyXDgINZZvbjJxF177s0oMKYcUUqs
 
 可以看到三者都是一致的。
-
-
 
 ##### host key
 
@@ -178,11 +161,7 @@ sshd: no hostkeys available -- exiting.
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDGr00hIjIBa37HagDxipqaSvevuyAt4niRUvYqoV8ecfaQG/SXytsGiwOPNn3zeKGc66JhJGOMBC8SW4Ph9ok8pmurDd2noQse3V5Sbxqs5F+4TLpSnz6aOkwHmpb0qCKqf6VmNK8MIiuCcY6H9V7DNLS4old4DDhDrf2NcSt/6nj9uGdpfeVcQD717VGC+ZrrQM4rBQica+maPr8174vGYuXVB1oIorjSzsHoFp9WWYqzKSODZj1Ur71vkaR/cSCaUIRP3UycO8n3Xynd3zAiCcRfMBnqLSr0t8PdWN+MOFRgRHVZzjUvVG4CP9o2Uih30gvtj8f15DyKDTJKsmsMVtRR1y4ZAUM+UQyjAcUmLC+GgnvGNu0d2sUwW9Nges8d8I4y+Toyai+ABXqEs0skJvjEIY6Ciuc57BTHun1348lGn6Zcxjay/FJRtwpYt5x1xrAAKY+XN5kZUjCZZxh6/En3MKckKG9BUXeXA2reF0T4UX8YMTa7lQGqY6g3gu8= root@qaq
 ```
 
-
-
 这里存在一个问题：我们无法确认上面得到的指纹哈希是否真的是来自服务端，有可能在中间被人修改的，是的，这就是中间人攻击。为了确认来自于服务端，需要用额外的方式向服务端确认指纹哈希的真实性。当然使用 CA 也是常用的解决方法。
-
-
 
 ##### known hosts
 
@@ -247,8 +226,6 @@ debug1: Host '172.22.8.204' is known and matches the RSA host key.
 debug1: Found key in /root/.ssh/known_hosts:2
 ```
 
-
-
 但目前为止其实我们已经完成了 SSH 工作流的第一步：**会话加密协商**，这也是在**加密**一节中提到的：SSH 是用对称加密加密连接的实现原理。
 
 ```bash
@@ -262,8 +239,6 @@ debug1: Remote protocol version 2.0, remote software version OpenSSH_8.2p1 Ubunt
 debug1: match: OpenSSH_8.2p1 Ubuntu-4 pat OpenSSH* compat 0x04000000
 ```
 
-
-
 协商过程其实是对会话加密使用的密钥生成的过程：
 
 ```
@@ -276,7 +251,7 @@ debug1: kex: client->server cipher: chacha20-poly1305@openssh.com MAC: <implicit
 debug1: expecting SSH2_MSG_KEX_ECDH_REPLY
 ```
 
-这部分描述了对称密钥生成的一些信息，**生成的密钥不会在双方传递，而是依靠各自已有的信息计算出来的**，这依赖于 [**Diffie-Hellman**](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange) 算法：
+这部分描述了对称密钥生成的一些信息，**生成的密钥不会在双方传递，而是依靠各自已有的信息计算出来的**，这依赖于 **[Diffie-Hellman](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange)** 算法：
 
 > 1. Both parties agree on a large prime number, which will serve as a seed value.
 > 2. Both parties agree on an encryption generator (typically AES), which will be used to manipulate the values in a predefined way.
@@ -285,8 +260,6 @@ debug1: expecting SSH2_MSG_KEX_ECDH_REPLY
 > 5. Both participants then exchange their generated public keys.
 > 6. The receiving entity uses their own private key, the other party’s public key, and the original shared prime number to compute a shared secret key. Although this is independently computed by each party, using opposite private and public keys, it will result in the *same* shared secret key.
 > 7. The shared secret is then used to encrypt all communication that follows.
-
-
 
 感兴趣的同学可以到参考的页面中了解更多信息。
 
@@ -298,13 +271,9 @@ debug1: expecting SSH2_MSG_NEWKEYS
 debug1: SSH2_MSG_NEWKEYS received
 debug1: rekey in after 134217728 blocks
 
-
-
 到此就是**会话加密协商**的部分。
 
-
-
-####  验证用户信息
+#### 验证用户信息
 
 在上面的日志中同时我们还看到：
 
@@ -365,8 +334,6 @@ The key's randomart image is:
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC9Yxq0xyho/7vuZ1QDeCD4UCLYZXYUO7E6DjWkwF9JOV27FEckoFg2WztOFGcH6Flj+vacrHtdRHIE6IpCuOZMQpmSMxW/TI4Wo6/iBUeWPZk9mYzchzfOlIy+Hsk1cDTBVMp8ep3G2dixiyQNNE7uxXaWa8m+DAlEcXFrdVER2iIAEYCNVjUsY/p3zueqVU761nWDnjEYLMoVbJ+BAcR0a30jrT5zduPbYkd44f1BSCZC38gsF6aEJDuy+6xgIWZmuypNBjZynWIupXztt5Qd6ozZJmg0pmmqSfhB9BX5H0CXZdrUO9GGgsmTUt2TeFvqRXjX+LBCWrI8AatpsmFtw0+AcJA8/9cuuCdhHNoZsAZcM/0l3UPuopwcsQqvbcuqKbgK/LodXJmqFyQhHQBX36/wJtyfPOLkwHRRGy2wPZPN2yLR0zliCJ/Xn7Fkx7E4dfunk7p/oFsDT1aWmd16CC8xIE9yRIKvG8k7TQH4yTzkxJxq4zlJrMnelU/w4w0= root@39d40aba8b3e
 ```
 
-
-
 创建好密钥之后，再次开始登录：
 
 ```bash
@@ -421,7 +388,7 @@ PasswordAuthentication yes # 设为yes
 
 再次执行：
 
-```➜  / ssh-copy-id test@172.21.38.72
+```➜
 /usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/root/.ssh/id_rsa.pub"
 /usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
 /usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
@@ -441,10 +408,6 @@ Number of key(s) added: 1
 Now try logging into the machine, with:   "ssh 'test@172.22.8.204'"
 and check to make sure that only the key(s) you wanted were added.
 ```
-
-
-
-
 
 此时在服务端如下命令：
 
@@ -482,13 +445,9 @@ Enter file in which the key is (/root/.ssh/id_rsa):
 3072 MD5:e0:18:64:1b:60:8a:35:8b:fb:6e:4a:20:bd:e3:9b:5b root@39d40aba8b3e (RSA)
 ```
 
-
-
 在流水线中需要克隆代码时，Jenkins 与 Gitlab间也需要配置密钥信息：
 
 {% asset_img image-20200808181605747.png %} 
-
-
 
 上面简单介绍了两处在工作中用到 SSH 的场景，接着回到我们之前的命令行中。
 
@@ -558,8 +517,6 @@ $
 我下面使用 SSH 做点"有意思"的事情：
 
 **让服务器同步Github上的代码**！(服务器上已经配置好了克隆需要的信息)
-
-
 
 回到客户端：
 
@@ -640,8 +597,6 @@ debug1: Exit status 0
 > 演示仓库 #  记于：2020年7月31日23:10:05
 ```
 
-
-
 这样每次都要输一长串命令，是不是觉得很繁琐？没事儿，我们可以把这一大堆的命令塞进一个文件里：
 
 ```bash
@@ -691,8 +646,6 @@ debug1: Exit status 0
 最后通过下图简单描述下整个登录的过程：
 
 {% asset_img SSH 免密登陆过程.png %} 
-
-
 
 ### 补充
 
@@ -745,25 +698,11 @@ Identity added: /root/.ssh/id_rsa (root@39d40aba8b3e)
 
 SSH 在现在信息世界中的重要不言而喻，对于其设计思想的理解也使我们在日常开发，系统设计时多了一些思路。对于其的一些使用的掌握更有利于问题的排查和自身工作的提效。总之，SSH 已和我们如影随形，是我们现在 IT 从业人员必备知识。
 
-
-
-
-
-
-
 ### 参考
 
 * https://www.ssh.com/ssh
-
 * https://tools.ietf.org/html/rfc4253
-
 * [https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange](https://en.wikipedia.org/wiki/Diffie–Hellman_key_exchange)
-
 * https://tools.ietf.org/id/draft-ietf-curdle-ssh-kex-sha2-10.html#rfc.section.1
-
 * https://stackoverflow.com/questions/17846529/could-not-open-a-connection-to-your-authentication-agent
-
 * https://www.digitalocean.com/community/tutorials/understanding-the-ssh-encryption-and-connection-process
-
-  
-

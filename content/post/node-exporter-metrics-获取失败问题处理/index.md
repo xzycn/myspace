@@ -44,7 +44,10 @@ error encoding and sending metric family: write tcp 192.168.66.74:9100" msg="->x
 
 通过修改node_exporter 启动 flags，过滤掉了不需要的label，大大减少了指标数量，从而缩短了metrics的获取时间。
 
-
+```shell
+# 例如如下 flag
+--collector.ipvs.backend-labels=local_port
+```
 
 参考文档：
 

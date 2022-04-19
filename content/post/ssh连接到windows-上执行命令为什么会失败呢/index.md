@@ -1,5 +1,5 @@
 ---
-title: SSH连接到Windows 上执行命令为什么会失败呢
+title: SSH 连接到 Windows Server 上执行命令为什么会失败呢
 date: 2022-04-19T07:57:16.459Z
 draft: false
 featured: false
